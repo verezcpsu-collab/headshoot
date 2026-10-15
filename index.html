@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIDE & SHOOT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-logo">H<span>&</span>S</div>
+      <p class="eyebrow">TACTICAL TEAM BATTLE</p>
+      <h1>HIDE <span>&</span> SHOOT</h1>
+      <p id="loadingTip">Preparing the battlefield...</p>
+      <div class="loading-track"><div id="loadingBar"></div></div>
+      <div class="loading-bottom">
+        <span>LOADING GAME</span><b id="loadingPercent">0%</b>
+      </div>
+    </div>
+  </div>
+
+  <main id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">✦</div>
+        <div><h1>HIDE <span>&</span> SHOOT</h1><p>TACTICAL TEAM BATTLE</p></div>
+      </div>
+      <button class="small-btn" id="headerSettings">⚙ SETTINGS</button>
+    </header>
+
+    <section id="menuScreen" class="screen menu-screen">
+      <div class="hero">
+        <div class="eyebrow">YOUR MISSION STARTS HERE</div>
+        <h2>ENTER THE<br><span>BATTLEFIELD.</span></h2>
+        <p>Team up. Take cover. Outplay the enemy.</p>
+        <div class="menu-actions">
+          <button class="primary-btn" id="startBtn">▶ &nbsp; START GAME</button>
+          <button class="secondary-btn" id="settingsBtn">⚙ &nbsp; SETTINGS</button>
+          <button class="secondary-btn" id="customizeBtn">✦ &nbsp; CUSTOMIZE CHARACTER</button>
+        </div>
+        <div class="lobby-panel">
+          <div class="lobby-heading"><span class="lobby-kicker">MATCH SETUP</span><span class="lobby-status" id="networkStatus">OFFLINE · READY</span></div>
+          <div class="lobby-grid">
+            <div class="map-picker">
+              <label for="playTypeChoice">PLAY TYPE</label>
+              <select id="playTypeChoice">
+                <option value="single">SINGLE PLAYER · VS AI</option>
+                <option value="lan">LAN MULTIPLAYER · SAME WI-FI</option>
+              </select>
+            </div>
+            <div class="map-picker">
+              <label for="teamSizeChoice">TEAM SIZE</label>
+              <select id="teamSizeChoice">
+                <option value="1">1v1 · DUEL</option>
+                <option value="2">2v2 · SMALL SQUAD</option>
+                <option value="3" selected>3v3 · RECOMMENDED</option>
+                <option value="4">4v4 · LARGE SQUAD</option>
+                <option value="5">5v5 · FULL TEAM</option>
+              </select>
+            </div>
+            <div class="map-picker">
+              <label for="matchTimeChoice">MATCH TIME</label>
+              <select id="matchTimeChoice">
+                <option value="180">3 MINUTES</option>
+                <option value="300">5 MINUTES</option>
+                <option value="600">10 MINUTES</option>
+                <option value="0">NO TIME LIMIT</option>
+              </select>
+            </div>
+          </div>
+          <div id="lanControls" class="lan-controls hidden">
+            <label for="serverAddress">HOST DEVICE ADDRESS</label>
+            <div class="lan-connect-row"><input id="serverAddress" type="text" placeholder="192.168.1.10:3000" value="localhost:3000"><input id="roomCode" type="text" maxlength="16" value="SQUAD" aria-label="Room name"></div>
+            <div class="lan-buttons"><button class="secondary-btn" id="hostLanBtn">HOST / CONNECT</button><button class="secondary-btn" id="joinLanBtn">JOIN ROOM</button><button class="text-btn" id="disconnectLanBtn">DISCONNECT</button></div>
+            <p class="lan-help">Run the included LAN server on one computer. Other devices on the same Wi-Fi enter that computer's IPv4 address. Use the same team size, mode, map, and time on every device.</p>
+            <div id="roomRoster" class="room-roster">No players connected.</div>
+          </div>
+        </div>
+        <div class="map-picker mode-picker">
+          <label for="modeChoice">CHOOSE GAME MODE</label>
+          <select id="modeChoice">
+            <option value="deathmatch">01 · TEAM DEATHMATCH</option>
+            <option value="ffa">02 · FREE FOR ALL</option>
+            <option value="plant">03 · PLANT / DEFUSE · BEST OF 6</option>
+            <option value="elimination">04 · TACTICAL ELIMINATION ★ RECOMMENDED</option>
+          </select>
+          <p id="modeDescription">Blue Squad versus Red Squad. First team to the score limit wins.</p>
+          <span class="recommended-note">★ RECOMMENDED FOR TACTICAL PLAY</span>
+        </div>
+        <div class="map-picker">
+          <label for="mapChoice">CHOOSE BATTLE MAP</label>
+          <select id="mapChoice">
+            <option value="dust2">01 · DUST DISTRICT · CLASSIC</option>
+            <option value="mirage">02 · SUNSET MARKET</option>
+            <option value="industrial">03 · INDUSTRIAL YARD</option>
+            <option value="forest">04 · FOREST OUTPOST</option>
+            <option value="desert">05 · DESERT RUINS</option>
+            <option value="snow">06 · FROZEN BASE</option>
+          </select>
+          <p id="mapDescription">Green terrain, timber cover, and a wide central lane.</p>
+        </div>
+        <div class="menu-info">
+          <span id="teamSizeInfo">3v3 SQUADS</span>
+          <span><i class="blue-dot"></i> BLUE SQUAD</span>
+          <span><i class="red-dot"></i> RED SQUAD</span>
+          <span>FIRST TO 10 WINS</span>
+        </div>
+      </div>
+      <div class="preview-panel">
+        <div class="preview-label">YOUR OPERATOR</div>
+        <canvas id="previewCanvas" width="280" height="280"></canvas>
+        <div id="previewName" class="preview-name">NIGHT RUNNER</div>
+        <p>READY FOR DEPLOYMENT</p>
+        <button class="text-btn" id="previewCustomize">EDIT CHARACTER →</button>
+      </div>
+    </section>
+
+    <section id="settingsScreen" class="screen sub-screen hidden">
+      <div class="panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">GAME PREFERENCES</div><h2>SETTINGS</h2></div>
+          <button class="small-btn backBtn">← BACK</button>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Difficulty</h3><p>Changes enemy accuracy and movement.</p></div>
+          <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+            <option value="insane">Insane</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Game Volume</h3><p>Adjust shooting and game sound volume.</p></div>
+          <div class="setting-control">
+            <input id="volume" type="range" min="0" max="100" value="50">
+            <b id="volumeValue">50%</b>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Sound Effects</h3><p>Enable or disable shooting sounds.</p></div>
+          <label class="switch"><input id="soundToggle" type="checkbox" checked><span></span></label>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Mouse Sensitivity</h3><p>Adjust aiming sensitivity.</p></div>
+          <div class="setting-control">
+            <input id="sensitivity" type="range" min="50" max="200" value="100">
+            <b id="sensitivityValue">100%</b>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Battle Score</h3><p>Eliminations needed to win.</p></div>
+          <select id="winScore">
+            <option value="5">5 eliminations</option>
+            <option value="10" selected>10 eliminations</option>
+            <option value="15">15 eliminations</option>
+            <option value="20">20 eliminations</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Show Aim Crosshair</h3><p>Display the aiming reticle.</p></div>
+          <label class="switch"><input id="crosshairToggle" type="checkbox" checked><span></span></label>
+        </div>
+        <div class="setting-row controls-settings-row">
+          <div><h3>Game Controls</h3><p>Quick guide for keyboard and mouse controls.</p></div>
+          <div class="settings-controls">
+            <span><kbd>W A S D</kbd> Move</span>
+            <span><kbd>MOUSE</kbd> Aim</span>
+            <span><kbd>CLICK</kbd> Shoot</span>
+            <span><kbd>1–5</kbd> Switch weapon</span>
+            <span><kbd>G</kbd> Grenade</span>
+            <span><kbd>E</kbd> Hide / Plant / Defuse</span>
+            <span><kbd>R</kbd> Reload</span>
+            <span><kbd>ESC</kbd> Pause</span>
+          </div>
+        </div>
+        <button class="primary-btn full-btn" id="saveSettings">SAVE SETTINGS</button>
+      </div>
+    </section>
+
+    <section id="customizeScreen" class="screen sub-screen hidden">
+      <div class="panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">MAKE IT YOURS</div><h2>CUSTOMIZE CHARACTER</h2></div>
+          <button class="small-btn backBtn">← BACK</button>
+        </div>
+        <div class="custom-layout">
+          <div class="custom-preview">
+            <canvas id="customCanvas" width="280" height="280"></canvas>
+            <p>LIVE CHARACTER PREVIEW</p>
+          </div>
+          <div class="custom-options">
+            <label for="characterName">Character Name</label>
+            <input id="characterName" type="text" maxlength="18" value="NIGHT RUNNER">
+
+            <label>Character Color</label>
+            <div class="swatches">
+              <button class="swatch selected" data-color="#a78bfa" style="--swatch:#a78bfa" aria-label="Violet"></button>
+              <button class="swatch" data-color="#8b5cf6" style="--swatch:#8b5cf6" aria-label="Purple"></button>
+              <button class="swatch" data-color="#35d399" style="--swatch:#35d399" aria-label="Green"></button>
+              <button class="swatch" data-color="#ffad42" style="--swatch:#ffad42" aria-label="Orange"></button>
+              <button class="swatch" data-color="#f1f2f8" style="--swatch:#f1f2f8" aria-label="White"></button>
+              <button class="swatch" data-color="#ff596e" style="--swatch:#ff596e" aria-label="Red"></button>
+              <button class="swatch" data-color="#f472d0" style="--swatch:#f472d0" aria-label="Pink"></button>
+              <button class="swatch" data-color="#facc15" style="--swatch:#facc15" aria-label="Yellow"></button>
+              <button class="swatch" data-color="#fb7185" style="--swatch:#fb7185" aria-label="Coral"></button>
+              <button class="swatch" data-color="#22d3ee" style="--swatch:#22d3ee" aria-label="Cyan"></button>
+              <button class="swatch" data-color="#a3e635" style="--swatch:#a3e635" aria-label="Lime"></button>
+            </div>
+            <label for="customColor">Custom Color</label>
+            <input id="customColor" type="color" value="#a78bfa" aria-label="Choose custom character color">
+
+            <label for="outfit">Outfit Style</label>
+            <select id="outfit">
+              <option value="standard">Standard Soldier</option>
+              <option value="heavy">Heavy Armor</option>
+              <option value="stealth">Stealth Suit</option>
+              <option value="scout">Scout Suit</option>
+              <option value="medic">Medic Suit</option>
+              <option value="urban">Urban Camo</option>
+              <option value="neon">Neon Suit</option>
+            </select>
+
+            <label for="hatStyle">Hat / Helmet Style</label>
+            <select id="hatStyle">
+              <option value="none">No Hat</option>
+              <option value="cap">Tactical Cap</option>
+              <option value="helmet" selected>Combat Helmet</option>
+              <option value="beanie">Beanie</option>
+              <option value="cowboy">Ranger Hat</option>
+              <option value="crown">Neon Crown</option>
+              <option value="headset">Headset</option>
+            </select>
+
+            <label for="weaponType">Starting Weapon</label>
+            <select id="weaponType">
+              <option value="rifle">Assault Rifle</option>
+              <option value="sniper">Sniper Rifle</option>
+              <option value="shotgun">Shotgun</option>
+              <option value="smg">SMG</option>
+              <option value="pistol">Pistol</option>
+            </select>
+
+            <label for="weaponColor">Weapon Color</label>
+            <select id="weaponColor">
+              <option value="#111018">Obsidian</option>
+              <option value="#a78bfa">Violet</option>
+              <option value="#7dff00">Neon Green</option>
+              <option value="#ffe34d">Signal Yellow</option>
+              <option value="#d5d9e5">Steel</option>
+            </select>
+
+            <button id="saveCharacter" class="primary-btn full-btn">SAVE CHARACTER</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen hidden">
+      <div class="game-toolbar">
+        <div><div class="eyebrow">LIVE MATCH · <span id="modeLabel">TEAM DEATHMATCH</span></div><h2 id="arenaName">FOREST OUTPOST</h2></div>
+        <div class="toolbar-actions">
+          <span class="difficulty-tag" id="activeDifficulty">NORMAL</span>
+          <button id="pauseBtn" class="small-btn">Ⅱ PAUSE</button>
+        </div>
+      </div>
+
+      <section class="scoreboard">
+        <div class="team blue-team"><div><span class="team-name" id="blueTeamLabel">BLUE SQUAD</span><div class="team-score" id="blueScore">0</div></div></div>
+        <div class="versus">VS</div>
+        <div class="team red-team"><div><span class="team-name" id="redTeamLabel">RED SQUAD</span><div class="team-score" id="redScore">0</div></div></div>
+      </section>
+
+      <div class="arena-wrap">
+        <canvas id="gameCanvas" width="1000" height="620"></canvas>
+        <div class="match-topbar" aria-live="polite">
+          <div class="match-side match-own"><small id="matchOwnLabel">BLUE</small><strong id="matchOwnScore">0</strong></div>
+          <div class="match-clock"><small>MATCH TIME</small><strong id="matchTime">03:00</strong></div>
+          <div class="match-side match-enemy"><small id="matchEnemyLabel">RED</small><strong id="matchEnemyScore">0</strong></div>
+        </div>
+        <div id="killFeed" class="kill-feed" aria-live="polite" aria-label="Recent eliminations"></div>
+
+        <div id="gameOverlay" class="game-overlay hidden">
+          <div class="overlay-card">
+            <div class="eyebrow">HIDE & SHOOT</div>
+            <h2 id="overlayTitle">PAUSED</h2>
+            <p id="overlayText">Take a breath, soldier.</p>
+            <button id="resumeBtn" class="primary-btn">▶ RESUME</button>
+            <button id="restartBtn" class="secondary-btn">↻ RESTART MATCH</button>
+            <button id="menuBtn" class="secondary-btn">⌂ MAIN MENU</button>
+          </div>
+        </div>
+      <section class="hud">
+        <div class="hud-card">
+          <span class="hud-label">YOUR HEALTH</span>
+          <div class="health-row"><div class="health-track"><div id="healthFill" class="health-fill"></div></div><b id="healthText">100</b></div>
+        </div>
+        <div class="hud-card"><span class="hud-label" id="weaponLabel">ASSAULT RIFLE · AMMO</span><div class="ammo-number"><span id="ammoText">30</span><small id="ammoMax">/ 30</small></div><span id="ammoStatus" class="ammo-status">READY</span></div>
+        <div class="hud-card"><span class="hud-label">GRENADES · G</span><div id="grenadeText" class="kills-number">3</div><span class="ammo-status">PRESS G TO THROW</span></div>
+        <div class="hud-card"><span class="hud-label">YOUR SCORE</span><div id="scoreText" class="kills-number">0</div></div>
+        <div class="hud-card"><span class="hud-label">YOUR KILLS</span><div id="killsText" class="kills-number">0</div></div>
+      </section>
+      </div>
+
+    </section>
+
+    <footer class="app-footer">HIDE & SHOOT <span>•</span> BROWSER GAME</footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
